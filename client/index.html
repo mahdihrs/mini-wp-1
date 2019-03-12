@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" media="screen" href="./assets/style.css">
+    <link href="https://stackpath.bootstrapcdn.com/bootswatch/4.3.1/flatly/bootstrap.min.css" rel="stylesheet" integrity="sha384-T5jhQKMh96HMkXwqVMSjF3CmLcL1nT9//tCqu9By5XSdj7CwR0r+F3LTzUdfkkQf" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+    <title>Kumpakata 2</title>
+</head>
+<body>
+    <div id="app">
+        <div id="homepage">
+            <div v-if="navbarHomepage">
+                <nav class="navbar navbar-expand-lg navbar-dark bg-dark d-flex">
+                    <div style="text-align: center; margin: 0 auto;">
+                        <a class="navbar-brand p-0 m-0" style="font-size: 2em;" href="#">Kumpakata</a>
+                        </div>
+                        <button @click="toMySites">Button</button>
+                </nav>
+            </div>
+
+            <div style="background-color: #152744;" v-if="headers">
+                <div class="jumbotron mb-1">
+                    <h1 class="display-3">Kumpakata  <i class="fas fa-signature"></i></h1>
+                    <hr class="my-4">
+                    <p class="lead">“You don’t start out writing good stuff. You start out writing crap and thinking it’s good stuff, and then gradually you get better at it. That’s why I say one of the most valuable traits is persistence.”</p>
+                    <p><strong>―Octavia E. Butler</strong></p>
+                    <p class="lead">
+                    <a class="btn btn-primary btn-lg" href="#" role="button" @click="toRegisterForm">Getting Started</a>
+                    </p>
+                </div>
+            </div>
+
+            <div>
+                <div class="container my-3" v-if="forms">
+                    <img class="d-block" style="min-width: 940px; margin: 0 auto; text-align: center;" src="https://ginadrayer.com/wp-content/uploads/2015/03/cant-write.gif" />
+                </div>
+                <div class="container" v-if="signUpForm">
+                    <form class="justify-content-center" style="max-width: 500px; margin: 0 auto;" @submit.prevent="register">
+                        <legend style="text-align: center;">Register Form</legend>
+                        <div class="form-group">
+                            <label for="exampleInputPassword1">Email</label>
+                            <input style="margin: 0 auto;" type="text" class="form-control" placeholder="Email" v-model="email">
+                        </div>
+                        <div class="form-group">
+                            <label>Name</label>
+                            <input style="margin: 0 auto;" type="text" class="form-control" placeholder="Full Name" v-model="name">
+                        </div>
+                        <div class="form-group">
+                            <label for="exampleInputPassword1">Password</label>
+                            <input type="password" class="form-control" id="exampleInputPassword1" placeholder="Password" v-model="password">
+                        </div>
+                        <div class="form-group">
+                            <label>Watch Tags</label>
+                            <input type="text" class="form-control" placeholder="e.g. 'Machine Learning' 'self-love' " v-model="watchedTags">
+                        </div>
+                        <button type="submit" class="btn btn-primary">Submit</button>
+                        <hr>
+                        <div class="row justify-content-center mt-3" style="margin: 0 auto;">
+                            <p>Already have an account? <a href="#" @click="showLoginForm">Login</a></p>
+                        </div>
+                    </form>
+                </div>
+                <div id="loginFormUser">
+                    <div class="container" v-if="loginForm">
+                        <form class="justify-content-center" style="max-width: 500px; margin: 0 auto;" @submit.prevent="loginUser">
+                            <legend style="text-align: center;">Login Form</legend>
+                            <div class="form-group">
+                                <label>Email</label>
+                                <input style="margin: 0 auto;" type="text" class="form-control" placeholder="Email" v-model="email">
+                            </div>
+                            <div class="form-group">
+                                <label for="exampleInputPassword1">Password</label>
+                                <input type="password" class="form-control" id="exampleInputPassword1" placeholder="Password" v-model="password">
+                            </div>
+                            <button type="submit" class="btn btn-primary">Submit</button>
+                            <hr>
+                            <div class="row justify-content-center mt-3" style="margin: 0 auto;">
+                                <a href="#" @click="showSignUpForm">Sign Up</a>
+                            </div>
+                        </form>
+                    </div>
+                </div>        
+            </div>
+
+        </div>
+
+        <div id="my-sites">
+            <div>
+                <nav class="navbar navbar-expand-lg navbar-dark bg-dark" style="max-height: 75px;" v-if="navbarMySites">
+                    <a class="mx-3 collapsed" data-toggle="collapse" href="#sideMenu" role="button" aria-expanded="false" aria-controls="collapseExample" style="height: 30px;">
+                        <h4 style="color: yellow;" class="mb-0"><i class="fas fa-ellipsis-h"></i></h4>
+                    </a>
+                    <a class="navbar-brand" href="#"><i style="font-size: 2em;" class="fas fa-signature" @click="homepage"></i></a>
+                    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarColor02" aria-controls="navbarColor02" aria-expanded="false" aria-label="Toggle navigation">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+
+                    <div class="collapse navbar-collapse col-10" id="navbarColor02">
+                        <form class="form-inline my-2 my-lg-0 col-12 ml-5">
+                            <input class="form-control mr-sm-2 hw-100 col-10" type="text" placeholder="Search">
+                        </form>
+                    </div>
+                    <button class="ml-3" @click="toWritePost">Write</button>
+                </nav>
+                <div id="sideMenu" class="mr-3 px-4 py-3 border col-1.5 collapse" style="max-width: 200px; max-height: 700px; overflow-y: auto;">
+                    <p id="sub-title">Functional Buttons</p>
+                    <a href="#" style="color: red !important;" class="side-button" ><img src="https://img.icons8.com/wired/48/000000/google-sites.png" height="25px" alt="" class="pb-1"> General</a><br>
+                    <a href="#" style="color: red !important;" class="side-button" ><img src="https://img.icons8.com/wired/64/000000/note.png" height="25px" alt="" class="pb-1"> My Articles</a><br>
+                    <a href="#" class="side-button"><img src="https://img.icons8.com/wired/64/000000/imac.png" height="25px" class="pb-1"> View Site</a><br>
+                    <a href="#" class="side-button"><img src="https://img.icons8.com/wired/64/000000/bar-chart.png" height="25px" class="pb-1"> Stats</a><br>
+                    <br>
+                    <p id="sub-title">Manage</p>
+                    <a class="side-button"><img src="https://img.icons8.com/wired/64/000000/activity-feed.png" height="25px" class="pb-1"> Activity</a><br>
+                    <a class="side-button"><img src="https://img.icons8.com/wired/64/000000/realtime-protection.png" height="25px" class="pb-1"> Plan</a><br>
+                    <a class="side-button"><img src="https://img.icons8.com/wired/64/000000/play.png" height="25px" alt="" class="pb-1"> Media</a><br>
+                    <a class="side-button"><img src="https://img.icons8.com/wired/64/000000/comments.png" height="25px" alt="" class="pb-1"> Comments</a><br>
+                    <a class="side-button" ><img src="https://img.icons8.com/wired/64/000000/zoom-in.png" height="25px" alt="" class="pb-1"> Search</a><br> <!-- v-on:click="searchBar = true; blogPost = false;" -->
+                    <a class="side-button"><img src="https://img.icons8.com/wired/64/000000/plugin.png" height="25px" class="pb-1"> Plugins</a><br>
+                    <a class="side-button">Import</a><br>
+                    <br>
+                    <p id="sub-title">Personalize</p>
+                    <a class="side-button">Customize</a><br>
+                    <br>
+                    <p id="sub-title">Configure</p>
+                    <a class="side-button">Sharing</a><br>
+                    <a class="side-button">People</a><br>
+                    <a class="side-button">Domains</a><br>
+                    <a class="side-button">Settings</a><br>
+                    <br>
+                    <p id="sub-title">Add New Site</a></p><br>
+                </div>
+            </div>
+        </div>
+
+        <div id="write-post">
+            <div v-if="navbarWritePost">
+                <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+                    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+                    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                        <button type="button" class="btn btn-sm" id="write-btn">Preview</button>
+                        <button form="#new-post" class="btn btn-primary btn-sm" value="Publish">Publish</button> <!-- v-on:click="addArticle" -->
+                    </div>
+                </nav>
+            </div>
+
+            <div id="create_post" class="container my-5 d-flex" v-if="writePost">
+                <div id="form-article" class="col-10">
+                        <input type="text" placeholder="Title" class="container my-2 form-control" height="100px" style="font-size: 20pt;" v-model="title">
+                        <div style="position:relative;" class="my-3">
+                            <a class='btn btn-primary' href='javascript:;'>
+                            Choose File
+                            <input type="file" style='position:absolute;z-index:2;top:0;left:0;filter: alpha(opacity=0);-ms-filter:"progid:DXImageTransform.Microsoft.Alpha(Opacity=0)";opacity:0;background-color:transparent;color:transparent;' name="file_source" size="40" @change="getFile">
+                            </a>
+                            <span class='label label-info' id="upload-file-info"></span>
+                        </div>
+                        <template>
+                            <div class="mb-3">
+                                <vue-tags-input
+                                v-model="tag"
+                                :tags="tags"
+                                @tags-changed="newTags => tags = newTags"
+                                />
+                            </div>
+                        </template>
+                        <div>
+                            <wysiwyg v-model="content" />
+                        </div>
+                        <div>
+                            <button type="submit" @click="postArticle" class="mt-2 btn btn-primary btn-sm">Publish</button>
+                        </div>
+                </div>  
+                <div>
+                    <p>Jualan</p>
+                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+                </div>
+            </div>   
+        </div>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@8"></script>
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script src="components/vueWysiwyg.js"></script>
+    <script src="https://unpkg.com/@johmun/vue-tags-input/dist/vue-tags-input.js"></script>
+    <script src="main.js"></script>
+</body>
+</html>
