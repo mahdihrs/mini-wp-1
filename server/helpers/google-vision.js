@@ -13,8 +13,6 @@ module.exports = {
                 const labels = results[0].labelAnnotations;
                 let theLabels = labels.map(e => e.description)
                 resolve(theLabels)
-                // console.log(theLabels)
-                // labels.forEach(label => console.log(label.description));
               })
               .catch(err => {
                 console.error('ERROR:', err);

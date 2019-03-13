@@ -14,20 +14,24 @@ const articleSchema = new Schema({
         type: Schema.Types.ObjectId,
         ref: 'User'
     },
-    imgUrl: {
-        type: String
+    image: {
+        type: String,
+        default: ''
     },
-    tags: {
-        type: Array,
-        default: []     
-    },
+    tags: [{
+        type: Schema.Types.ObjectId,
+        ref: 'Tag',
+        default: []
+    }],
     created_at: {
         type: Date,
         default: new Date
     },
     favorites: [{
         type: Schema.Types.ObjectId,
-        ref: 'User'
+        ref: 'User',
+        required: true,
+        default: []
     }]
 })
 

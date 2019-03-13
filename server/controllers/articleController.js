@@ -1,5 +1,6 @@
 const Article = require('../models/article')
 const Tag = require('../models/tag')
+const { autoGenerateTags } = require('../helpers/google-vision')
 
 class Controller {
     static allArticles(req, res) {
@@ -9,7 +10,7 @@ class Controller {
         }
         Article.find(search).sort([
             ['created_at', 'descending']
-        ]).populate('author')
+        ]).populate('author').populate('tags')
         .then(articles => {
             res
                 .status(200)
@@ -29,40 +30,73 @@ class Controller {
     }
 
     static addArticle(req, res) {
-        let tag = []
-        let id = req.decoded.id
-        let data = JSON.parse(req.body.data)
-        tag = data.tag.split(' ')
-        let addArticle = {
-            title: data.title,
-            content: data.content,
-            tags: tag,
-            author: id
-        }
-        if (req.file) {
-            addArticle.imgUrl = req.file.cloudStoragePublicUrl
-        }
-        Article.create(addArticle)
-        .then(newArticle => {
-            res
-                .status(201)
-                .json({
-                    msg: `Creating an article success`,
-                    data: newArticle
+        let data = req.body
+        let promises = []
+        let readyToPutTag = [] //tag yang udah ada dan gaperlu di-create lagi
+        data.tags = data.tags.map(e => e.text)
+        data.tags.forEach(tag => {
+            promises.push(
+                Tag.findOne({
+                    name: tag
                 })
+            )
+        })
+        Promise.all(promises)
+        .then(tags => {
+            readyToPutTag = tags.filter(e => e !== null)
+            if (readyToPutTag.length > 0) {
+                readyToPutTag.forEach(tg => {
+                    let index = data.tags.findIndex(e => e === tg.name)
+                    data.tags.splice(index, 1)
+                })
+            }
+            readyToPutTag = readyToPutTag.map(e => e._id)
+            let creatingTag = []
+            data.tags.forEach(tag => {
+                creatingTag.push(
+                    Tag.create({
+                        name: tag
+                    })
+                )
+            })
+            return Promise.all(creatingTag)
+        })
+        .then(createdTags => {
+            let createArticle = {
+                title: data.title,
+                content: data.content,
+                author: req.decoded.id,
+                tags: createdTags,
+                image: data.image
+            }
+
+            createArticle.tags = createArticle.tags.map(e => e._id).concat(readyToPutTag)
+            Article.create(createArticle)
+            .then(newArticle => {
+                res
+                    .status(200)
+                    .json({
+                        msg: 'Article has been successfully created',
+                        newArticle
+                    })                
+            })
         })
         .catch(err => {
+            console.log(err)
             res
                 .status(500)
                 .json({
-                    msg: `Internal server error`,
+                    msg: `internal server error`,
                     err: err
                 })
         })
     }
 
     static getArticle(req, res) {
-        Article.findById(req.params.id).populate('author')
+        Article
+            .findById(req.params.id)
+            .populate('author')
+            .populate('tags')
         .then(article => {
             res
                 .status(201)
@@ -130,6 +164,27 @@ class Controller {
             res
                 .status(200)
                 .json(articles)
+        })
+        .catch(err => {
+            res
+                .status(500)
+                .json({
+                    msg: `Internal server error`,
+                    err: err
+                }) 
+        })
+    }
+
+    static autoGenerateTags(req, res) {
+        autoGenerateTags(req.file.cloudStoragePublicUrl)
+        .then(labels => {
+            console.log(labels)
+            res 
+                .status(200)
+                .json({
+                    labels,
+                    image: req.file.cloudStoragePublicUrl
+                })
         })
         .catch(err => {
             res

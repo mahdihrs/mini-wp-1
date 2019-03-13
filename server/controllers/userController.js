@@ -1,6 +1,8 @@
 require('dotenv').config()
-const app = require('express')()
+// const app = require('express')()
 const User = require('../models/user')
+const Tag = require('../models/tag')
+const Article = require('../models/article')
 const { generate } = require('../helpers/jwt')
 const { decrypt } = require('../helpers/bcryptjs')
 const {OAuth2Client} = require('google-auth-library');
@@ -12,7 +14,7 @@ class Controller {
             name: req.body.name,
             email: req.body.email,
             password: req.body.password,
-            watchedTags: req.body.watchedTags
+            watchedTags: req.body.watchedTags.map(e => e.text)
         })
         .then(newUser => {
             let token = generate(newUser)
@@ -51,7 +53,6 @@ class Controller {
     }
 
     static login(req, res) {
-        console.log(req.body)
         let userData;
         if (!req.body.token) {
             return User.findOne({
@@ -136,6 +137,58 @@ class Controller {
                     })
             })
         }
+    }
+
+    //cari user buat dapetin field watchedTags
+    //cari tagId dari user's watched tags
+    //abis itu di loop terus di find article yang punya tags dengan tagId tsb
+    static seeWatchedTags(req, res) {
+        let articlesSuggestions = []
+        User
+            .findById(req.decoded.id)
+            .then(user => {
+                // console.log(user)
+                let findTag = []
+                user.watchedTags.forEach(wT => {
+                    findTag.push(
+                        Tag
+                            .findOne({
+                                name: wT
+                            })
+
+                    )
+                })
+                return Promise.all(findTag)
+            })
+            .then(found => {
+                let noNull = found.filter(e => e !== null)
+                let idFiltered = noNull.map(id => id._id)
+                let findArticles = []
+                idFiltered.forEach(tag => {
+                    findArticles.push(
+                        Article
+                            .find({
+                                tags: tag
+                            })
+                    )
+                })
+                return Promise.all(findArticles)
+            })
+            .then(articles => {
+                articles.forEach(art => {
+                    articlesSuggestions = articlesSuggestions.concat(art)
+                })
+                console.log(articlesSuggestions)
+            })
+            .catch(err => {
+                console.log(err)
+                res
+                    .status(500)
+                    .json({
+                        msg: `Internal server error`,
+                        err
+                    })
+            })
     }
 }
 
