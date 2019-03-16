@@ -24,6 +24,12 @@ body {
 .form-control {
     border-radius: 0.8rem !important;
 }
+.no-underline-anchor-tag:hover {
+    text-decoration: none;
+}
+.kumpakata-font {
+    font-family: 'ZCOOL XiaoWei', serif;
+}
 
 /* WHAT YOU SEE IS WHAT YOU GET */
 

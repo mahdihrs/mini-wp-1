@@ -7,21 +7,38 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
     <link rel="stylesheet" type="text/css" media="screen" href="./assets/style.css">
     <link href="https://stackpath.bootstrapcdn.com/bootswatch/4.3.1/flatly/bootstrap.min.css" rel="stylesheet" integrity="sha384-T5jhQKMh96HMkXwqVMSjF3CmLcL1nT9//tCqu9By5XSdj7CwR0r+F3LTzUdfkkQf" crossorigin="anonymous">
+    <link href="https://fonts.googleapis.com/css?family=ZCOOL+XiaoWei" rel="stylesheet">
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
     <title>Kumpakata 2</title>
 </head>
 <body>
     <div id="app">
         <div id="homepage">
-            <navbar-homepage @to-my-sites="toMySites" v-if="navbarHomepage"></navbar-homepage>
+            <navbar-homepage :headers="headers" :signup="signUpForm" @to-my-site="toMySites" :someonelogin="isLogin" :registerform="registerFormFromExplore" @to-register-page="toRegisterForm" @to-homepage="homepage" :explore="exploreSection" @to-explore-section="toExplore" v-if="navbarHomepage"></navbar-homepage>
             <content-homepage @to-register-form="toRegisterForm" v-if="headers"></content-homepage>
-            <register-form @set-user-login="setUserLogin" v-if="signUpForm"></register-form>
+            <register-form @get-watched-tags="getArticlesByMyWatchedTags" @get-my-articles="getMyArticles" @set-user-login="setUserLogin" v-if="signUpForm"></register-form>
+            <explore-section @to-register="toRegisterForm" :someonelogin="isLogin" :explorecards="allArticlesForExplore" v-if="exploreSection"></explore-section>
         </div>
 
-        <div id="my-sites">
-            <navbar-mysites @to-homepage="homepage" @to-write-post="toWritePost" v-if="navbarMySites"></navbar-mysites>
+        <div id="my-sites" v-if="mysites">
+            <navbar-mysites @search-article="searchArticle" @to-homepage="homepage" @to-write-post="toWritePost" v-if="navbarMySites"></navbar-mysites>
+            <!-- article contents -->
+            <div class="d-flex">
+                <!-- <div> -->
+                    <side-bar @my-watched-tags="toMyWatchList" v-if="sidebar" @get-me-articles="toMyArticles"></side-bar>
+                <!-- </div> -->
+                <div class="my-5 col-9">
+                    <watched-tags :userlogin="userLogin" v-if="watchedTagsList" :articleswatchedbyme="articlesWatchedByMeThroughTags"></watched-tags>
+                    <my-articles-content @get-article-detail="getFullDetailArticle" @get-me-articles="getMyArticles" v-if="myArticlesState" :myarticles="myArticles"></my-articles-content>
+                    <article-detail v-if="fullArticleState" :fullarticle="articleDetail"></article-detail>
+                </div>
+            </div>
         </div>
 
+        <div id="view-on-sites">
+
+        </div>
+        
         <div id="write-post">
             <navbar-write-post v-if="navbarWritePost"></navbar-write-post>
             <write-post-form @to-my-sites="toMySites" v-if="writePost"></write-post-form>
@@ -39,15 +56,24 @@
     <!-- homepage -->
     <script src="components/homepage/navbar-homepage.js"></script>
     <script src="components/homepage/content-homepage.js"></script>
+    <!-- explore section / no token required -->
+    <script src="components/homepage/explore-section.js"></script>
+    <!-- <script src="components/explore/navbar-explore.js"></script> -->
     <!-- submission forms -->
     <script src="components/forms/register-login-form.js"></script>
     <!-- my-sites -->
     <script src="components/mysites/navbar-mysites.js"></script>
-    <!-- <script src="components/mysites/side-bar.js"></script> -->
+    <script src="components/mysites/side-bar.js"></script>
     <script src="components/mysites/my-articles.js"></script>
+    <script src="components/mysites/article-detail.js"></script>
+    <script src="components/mysites/watched-tags.js"></script>
     <!-- write post -->
     <script src="components/createpost/write-post.js"></script>
     <script src="components/createpost/navbar-write-post.js"></script>
+    <!-- small components -->
+    <script src="components/small-components/highlight-cards.js"></script>
+    <script src="components/small-components/list-cards.js"></script>
+    <script src="components/small-components/article-list.js"></script>
     <!-- main js -->
     <script src="components/main.js"></script>
 </body>

@@ -3,30 +3,80 @@ const Tag = require('../models/tag')
 const { autoGenerateTags } = require('../helpers/google-vision')
 
 class Controller {
+    static findByTags(req, res) {
+        let query = req.body.tag
+        Article
+            .find({
+                tags: query
+            })
+            .then(articles => {
+                res
+                    .status(200)
+                    .json(articles)
+            })
+            .catch(err => {
+                res
+                    .status(500)
+                    .json({
+                        msg: `Internal server error`,
+                        err
+                    })
+            })
+    }
+    
     static allArticles(req, res) {
-        let search = {}
         if (req.query.search) {
-            search = { title: new RegExp(`.*${req.query.search}.*`, `i`) }
+            let keyword = new RegExp(req.query.search, 'i')
+            Article.find({
+              $or: [
+                { 
+                    title: {
+                        $in: [keyword]
+                    }
+                }, {
+                    content: { 
+                        $in: [keyword]
+                    }
+                },
+              ]
+            })
+            .then(articles=> {
+                console.log(articles)
+                res
+                    .status(200)
+                    .json(articles)
+            })
+            .catch(err => {
+                console.log(err)
+                res
+                    .status(500)
+                    .json({
+                        msg: `Internal server error`,
+                        err: err
+                    })
+            })
+        } else {
+            let search = {}
+            // if (req.query.search) {
+            //     search = { title: new RegExp(`.*${req.query.search}.*`, `i`) }
+            // }
+            Article.find(search).sort([
+                ['created_at', 'descending']
+            ]).populate('author').populate('tags')
+            .then(articles => {
+                res
+                    .status(200)
+                    .json(articles)
+            })
+            .catch(err => {
+                res
+                    .status(500)
+                    .json({
+                        msg: `Internal server error`,
+                        err: err
+                    })
+            })
         }
-        Article.find(search).sort([
-            ['created_at', 'descending']
-        ]).populate('author').populate('tags')
-        .then(articles => {
-            res
-                .status(200)
-                .json({
-                    msg: `Fetching all articles`,
-                    data: articles
-                })
-        })
-        .catch(err => {
-            res
-                .status(500)
-                .json({
-                    msg: `Internal server error`,
-                    err: err
-                })
-        })
     }
 
     static addArticle(req, res) {
@@ -57,6 +107,7 @@ class Controller {
                     Tag.create({
                         name: tag
                     })
+                    // new Promise((resolve, reject) => { Tag.findOneAndUpdate({ name: tag }, { $set: { name: tag }}, { upsert: true })})
                 )
             })
             return Promise.all(creatingTag)
@@ -116,7 +167,7 @@ class Controller {
     }
 
     static editArticle(req, res) {
-        let filter = ['title', 'content']
+        let filter = ['title', 'content', 'tags']
         let filtered = {}
         for (const key in req.body) {
             let findFilter = filter.includes(key)
@@ -200,28 +251,25 @@ class Controller {
         let regex = new RegExp(req.query.search, 'i')
 
         Article.find({
+          $or: [
+            { 
+                title: { 
+                    $in: [regex]
+                }
+            }, {
+                content: { 
+                    $in: [regex]
+                }
+            }, { 
+                description: { 
+                    $in: [regex]
+                }
+            }, { 
                 tags: { 
                     $in: [regex]
                 }
-        //   $or: [
-        //     { 
-        //         title: { 
-        //             $in: [regex]
-        //         }
-        //     }, {
-        //         content: { 
-        //             $in: [regex]
-        //         }
-        //     }, { 
-        //         description: { 
-        //             $in: [regex]
-        //         }
-        //     }, { 
-        //         tags: { 
-        //             $in: [regex]
-        //         }
-        //     },
-        //   ]
+            },
+          ]
         })
         .then(data=> {
             console.log(data)

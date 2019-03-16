@@ -25,6 +25,7 @@ class Controller {
                     user: newUser,
                     id: newUser.id,
                     name: newUser.name,
+                    tags: newUser.watchedTags,
                     token
                 })
         })
@@ -80,6 +81,7 @@ class Controller {
                         res.json({
                             id: user._id,
                             name: user.name,
+                            tags: user.watchedTags,
                             token
                         })
                     }
@@ -179,6 +181,9 @@ class Controller {
                     articlesSuggestions = articlesSuggestions.concat(art)
                 })
                 console.log(articlesSuggestions)
+                res
+                    .status(200)
+                    .json(articlesSuggestions)
             })
             .catch(err => {
                 console.log(err)

@@ -23,7 +23,7 @@ router.post('/login', controller.login)
 router.post('/register', controller.register)
 router.get('/my-articles-based-on-watched-tags', isLogin, controller.seeWatchedTags)
 
-
+// ==============================================================
 router.get('/login-github', passport.authenticate('github'))
 router.get('/auth/github/callback', 
   passport.authenticate('github', { failureRedirect: '/login' }),
