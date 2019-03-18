@@ -1,7 +1,7 @@
 Vue.component('side-bar', {
     data() {
         return {
-            
+
         }
     },
     methods: {
@@ -15,10 +15,10 @@ Vue.component('side-bar', {
     template: `
     <div id="sideMenu" class="mr-3 ml-0 px-4 py-3 border">
         <p id="sub-title">Functional Buttons</p>
-        <a href="#" style="color: red !important;" class="side-button" @click="toWatchedTags"><img src="https://img.icons8.com/wired/48/000000/google-sites.png" height="25px" alt="" class="pb-1"> Watched Tags</a><br>
-        <a href="#" style="color: red !important;" class="side-button" @click="getMyArticles"><img src="https://img.icons8.com/wired/64/000000/note.png" height="25px" alt="" class="pb-1"> My Articles</a><br>
-        <a href="#" class="side-button"><img src="https://img.icons8.com/wired/64/000000/imac.png" height="25px" class="pb-1"> View Site</a><br>
-        <a href="#" class="side-button"><img src="https://img.icons8.com/wired/64/000000/bar-chart.png" height="25px" class="pb-1"> Stats</a><br>
+        <a href="#" class="side-button no-underline-anchor-tag" @click="toWatchedTags"><img src="https://img.icons8.com/wired/48/000000/google-sites.png" height="25px" alt="" class="pb-1"> Watched Tags</a><br>
+        <a href="#" class="side-button no-underline-anchor-tag" @click="getMyArticles"><img src="https://img.icons8.com/wired/64/000000/note.png" height="25px" alt="" class="pb-1"> My Articles</a><br>
+        <a href="#" class="side-button no-underline-anchor-tag"><img src="https://img.icons8.com/wired/64/000000/imac.png" height="25px" class="pb-1"> View Site</a><br>
+        <a href="#" class="side-button no-underline-anchor-tag"><img src="https://img.icons8.com/wired/64/000000/bar-chart.png" height="25px" class="pb-1"> Stats</a><br>
         <br>
         <p id="sub-title">Manage</p>
         <a class="side-button"><img src="https://img.icons8.com/wired/64/000000/activity-feed.png" height="25px" class="pb-1"> Activity</a><br>

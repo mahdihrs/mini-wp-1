@@ -14,16 +14,16 @@ Vue.component('list-cards', {
                 this.image = false
             }
         },  
-        toDetailArticle(id) {
-
+        toDetailArticle() {
+            this.$emit('to-detail-article', this.cardObj._id)
+        },
+        dateFormat(date) {
+            return new Date(date).toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'})
         }
     },
     computed: {
         cardContent() {
             return this.cardObj.content.substring(0, 25)
-        },
-        newCreatedDate() {
-
         }
     },
     template: `
@@ -35,10 +35,11 @@ Vue.component('list-cards', {
                 <img v-else style="max-height:90px;" src="../../assets/no_image_available.png" class="card-img-top card-img" alt="..." height="100px" >
             </div>
             <div class="col-md-8 col-12" style="max-height: 101px">
-                <div class="card-body py-1 px-1" style="max-height: 101px">
-                    <h5 class="my-0 card-title">{{ cardObj.title }}</h5>
-                    <p class="card-text" v-html="cardContent"></p>
-                    <p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p>
+                <div class="card-body py-1 px-1" style="max-height: 101px" @click="toDetailArticle">
+                    <a href="#" class="card-text no-underline-anchor-tag blacked"><h5 class="my-0 card-title no-underline-anchor-tag blacked">{{ cardObj.title }}</h5></a>
+                    <a href="#" class="card-text no-underline-anchor-tag blacked" v-html="cardContent"></a> <br>
+                    <!-- <p href="#" class="card-text no-underline-anchor-tag blacked"><small class="text-muted">Last updated 3 mins ago</small></a> -->
+                    <small>Created At: {{ dateFormat(cardObj.created_at) }}</small></div>
                 </div>
             </div>
         </div>

@@ -2,10 +2,15 @@ const Toast = Swal.mixin({
     toast: true,
     position: 'top-end',
     showConfirmButton: false,
-    timer: 3000
+    timer: 2000
 });
 
 Vue.component('register-form', {
+    props: ['tologin', 'googleuser'],
+    created() {
+        this.checkAddress()
+        this.checkGoogleSignIn()
+    },
     data() {
         return {
             email: '',
@@ -27,6 +32,25 @@ Vue.component('register-form', {
         }
     },
     methods: {
+        checkGoogleSignIn() {
+            if (this.googleuser.name) {
+                this.name = this.googleuser.name
+                this.email = this.googleuser.email
+            }
+        },  
+        checkAddress() {
+            if (this.tologin) {
+                this.email = ''
+                this.password = ''
+                this.signUpForm = false
+                this.loginForm = true
+            } else {
+                this.email = ''
+                this.password = ''
+                this.signUpForm = true
+                this.loginForm = false
+            }
+        },
         getMyArticles() {
             this.$emit('get-my-articles')
         },

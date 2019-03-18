@@ -7,7 +7,8 @@ const mongoose = require('mongoose')
 const indexRouter = require('./routes/index');
 
 const app = express();
-mongoose.connect('mongodb://localhost/mini-wp', { useNewUrlParser: true })
+// mongoose.connect('mongodb://localhost/mini-wp', { useNewUrlParser: true })
+mongoose.connect(`mongodb+srv://mahdihrs:${process.env.PASS_ATLAS}@projects-a1wq0.gcp.mongodb.net/test?retryWrites=true`, { useNewUrlParser: true })
 app.use(cors())
 app.use(logger('dev'));
 app.use(express.json());

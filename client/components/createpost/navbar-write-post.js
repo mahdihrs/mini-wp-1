@@ -6,14 +6,15 @@ Vue.component('navbar-write-post', {
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                    <button type="button" class="btn btn-sm" id="write-btn">Preview</button>
-                    <button form="#new-post" class="btn btn-primary btn-sm" value="Publish">Publish</button> <!-- v-on:click="addArticle" -->
+                    <button type="button" class="btn btn-primary" id="write-btn" @click="toMySites">My Sites</button>
                 </div>
             </nav>
         </div>
     `,
     methods: {
-        
+        toMySites() {
+            this.$emit('to-my-site')
+        }
     }
 })
 

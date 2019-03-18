@@ -13,7 +13,6 @@ function isLogin(req, res, next) {
             req.decoded = decoding
             next()
         } catch(err) {
-            console.log(err)
             res
                 .status(401)
                 .json({

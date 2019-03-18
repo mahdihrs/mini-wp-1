@@ -88,7 +88,6 @@ class Controller {
                 }
             })
             .catch(err => {
-                console.log(err)
                 res
                     .status(500)
                     .json({
@@ -99,7 +98,7 @@ class Controller {
         } else {
             client.verifyIdToken({
                 idToken: req.body.token,
-                audience: '670497221809-rdt56lmo9f29ca1rfp8k3svm39q6gscd.apps.googleusercontent.com'
+                audience: '292497169006-4bgte61cv58papdefcrkfjr73nq2nccr.apps.googleusercontent.com'
             })
             .then(ticket => {
                 const payload = ticket.getPayload()
@@ -110,27 +109,36 @@ class Controller {
             })
             .then(user => {
                 if (!user) {
-                    return User.create({
-                        email: userData.email,
-                        password: '000000'
-                    })
-                    .then(newUser => {
-                        let token = generate(newUser)
-                        res
-                            .status(200)
-                            .json({
-                                token: token
-                            })
-                    })
+                    //kalo user ga ada, balikin ke client terus populate di form register
+                    //buat nanti selanjutnya nambahin field yang belum ada
+                    res
+                        .status(200)
+                        .json({
+                            name: userData.name,
+                            email: userData.email
+                        })
+                    // return User.create({
+                    //     email: userData.email,
+                    //     password: '000000'
+                    // })
+                    // .then(newUser => {
+                    //     let token = generate(newUser)
+                    //     res
+                    //         .status(200)
+                    //         .json({
+                    //             token: token
+                    //         })
+                    // })
                 } else {
                     let token = generate(user)
                     res
                         .status(200)
-                        .json(token)
+                        .json({
+                            token: token
+                        })
                 }
             })
             .catch(err => {
-                console.log(err)
                 res
                     .status(500)
                     .json({
@@ -143,13 +151,11 @@ class Controller {
 
     //cari user buat dapetin field watchedTags
     //cari tagId dari user's watched tags
-    //abis itu di loop terus di find article yang punya tags dengan tagId tsb
     static seeWatchedTags(req, res) {
         let articlesSuggestions = []
         User
             .findById(req.decoded.id)
             .then(user => {
-                // console.log(user)
                 let findTag = []
                 user.watchedTags.forEach(wT => {
                     findTag.push(
@@ -157,7 +163,6 @@ class Controller {
                             .findOne({
                                 name: wT
                             })
-
                     )
                 })
                 return Promise.all(findTag)
@@ -172,6 +177,7 @@ class Controller {
                             .find({
                                 tags: tag
                             })
+                            .populate('tags')
                     )
                 })
                 return Promise.all(findArticles)
@@ -180,18 +186,72 @@ class Controller {
                 articles.forEach(art => {
                     articlesSuggestions = articlesSuggestions.concat(art)
                 })
-                console.log(articlesSuggestions)
                 res
                     .status(200)
                     .json(articlesSuggestions)
             })
             .catch(err => {
-                console.log(err)
                 res
                     .status(500)
                     .json({
                         msg: `Internal server error`,
                         err
+                    })
+            })
+    }
+
+    static getProfile(req, res) {
+        User
+            .findById(req.decoded.id)
+            .then(user => {
+                res 
+                    .status(200)
+                    .json(user)
+            })
+            .catch(err => {
+                res 
+                    .status(500)
+                    .json({
+                        msg: `Internal server error`,
+                        err                        
+                    })
+            })
+    }
+
+    static editArticleTags(req, res) {
+        let command = {
+            $push: {
+                watchedTags: req.body.add[0]
+            }
+        }
+
+        if (req.body.reduce.length !== 0) {
+            command = {
+                $pull: {
+                    watchedTags: req.body.reduce[0]
+                }
+            }   
+        }
+        
+        User 
+            .findOneAndUpdate({
+                _id: req.decoded.id
+            }, command, {
+                new: true
+            })
+            .then(updated => {
+                res 
+                    .status(200)
+                    .json({
+                        msg: `Watched tags has been successfully updated`
+                    })
+            })
+            .catch(err => {
+                res 
+                    .status(500)
+                    .json({
+                        msg: `Internal server error`,
+                        err                        
                     })
             })
     }

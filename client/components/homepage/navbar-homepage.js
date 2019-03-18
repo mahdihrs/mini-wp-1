@@ -30,22 +30,29 @@ Vue.component('navbar-homepage', {
             this.$emit('to-register-page')
         },
         toMySite() {
+            if (!localStorage.getItem('token')) {
+                swal('Oops! Look you haven\'t been login, please to login menu to access this page =)')
+            }
             this.$emit('to-my-site')
+        },
+        loginUser() {
+            this.$emit('login-user', 'login')
         }
     },
     template: `
     <div>
         <nav class="navbar navbar-expand-lg navbar-dark bg-dark d-flex">
             <button class="btn btn-primary" @click="toExploreSect">Explore</button>
-            
+            <button class="btn btn-primary mx-3" v-if="!someonelogin" @click="loginUser">Login</button>
+            <div class="g-signin2" data-onsuccess="onSignIn" style="max-width: 100px;"></div>
             <div style="text-align: center; margin: 0 auto;">
                 <a class="navbar-brand p-0 m-0" style="font-size: 2em;" href="#" @click="toHomepage">Kumpakata</a>
                 </div>
                 <div v-if="explore && registerform && !someonelogin"><template class="mt-1" style="font-size=0.3em;">Need More Access?</template><button class="btn btn-primary" @click="toRegister">Register</button></div>
                 <!-- <div v-if="!explore && !someonelogin || !registerform && !someonelogin"> -->
-                <div v-if="headers">
+                <div v-if="headers && someonelogin">
                     <button @click="toMySite" class="btn btn-primary">Posts</button>
-                    <button class="btn btn-primary" @click="loginGithub">Git</button>
+                    <!-- <button class="btn btn-primary" @click="loginGithub">Git</button> -->
                 </div>
         </nav>
     </div>

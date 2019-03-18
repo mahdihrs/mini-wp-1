@@ -1,7 +1,6 @@
 const Article = require('../models/article')
 
 function isAuthor(req, res, next) {
-    console.log(req.decoded, '=======')
     Article.findById(req.params.id)
     .then(article => {
         if (req.decoded.id != article.author) {

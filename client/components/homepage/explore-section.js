@@ -9,20 +9,36 @@ Vue.component('explore-section', {
         toRegister() {
             this.$emit('to-register')
         },
+        toFullArticle(id) {
+            // this.$emit('to-detail-article', payload)
+            server({
+                url: `/articles/${id}`,
+                method: 'get',
+                headers: {
+                    access_token: localStorage.getItem('token')
+                }
+            })
+            .then(({data}) => {
+                this.$emit('data-payload-to-show', data)
+            })
+            .catch(err => {
+                console.log(err)
+            })
+        }
     },
     template: `
     <div>
         <div class="container d-flex mt-5">
             <div>
-                <highlight-cards :cardObj="explorecards[1]"></highlight-cards>
+                <highlight-cards @to-detail-article="toFullArticle" :cardObj="explorecards[explorecards.length - 6]"></highlight-cards>
             </div>
             <div class="mx-5">
-                <list-cards :cardObj="explorecards[1]"></list-cards>
-                <list-cards :cardObj="explorecards[0]"></list-cards>
-                <list-cards :cardObj="explorecards[2]"></list-cards>
+                <list-cards @to-detail-article="toFullArticle" :cardObj="explorecards[explorecards.length - 2]"></list-cards>
+                <list-cards @to-detail-article="toFullArticle" :cardObj="explorecards[explorecards.length - 3]"></list-cards>
+                <list-cards @to-detail-article="toFullArticle" :cardObj="explorecards[explorecards.length - 4]"></list-cards>
             </div>
             <div>
-                <highlight-cards :cardObj="explorecards[4]"></highlight-cards>
+                <highlight-cards @to-detail-article="toFullArticle" :cardObj="explorecards[5]"></highlight-cards>
             </div>
         </div>
         <div v-if="!someonelogin" class="container">

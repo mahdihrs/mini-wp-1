@@ -2,6 +2,7 @@ const router = require('express').Router()
 const controller = require('../controllers/userController')
 const isLogin = require('../middlewares/isLogin')
 
+//Login Github menggunakan Passportjs tidak berhasil karena terkendala CORS dan tidak berhasil menemukan solusinya
 const passport = require('passport')
 const GitHubStrategy = require('passport-github').Strategy;
 
@@ -11,7 +12,6 @@ passport.use(new GitHubStrategy({
     callbackURL: "http://localhost:3000/auth/github/callback"
   },
   function(accessToken, refreshToken, profile, cb) {
-    console.log(profile._json)
     res.redirect('http://localhost:8080/?access-token=jwt_token');
     // User.findOrCreate({ githubId: profile.id }, function (err, user) {
     //   return cb(err, user);
@@ -22,6 +22,8 @@ passport.use(new GitHubStrategy({
 router.post('/login', controller.login)
 router.post('/register', controller.register)
 router.get('/my-articles-based-on-watched-tags', isLogin, controller.seeWatchedTags)
+router.get('/get-user-info', isLogin, controller.getProfile)
+router.post('/edit-watched-tag', isLogin, controller.editArticleTags)
 
 // ==============================================================
 router.get('/login-github', passport.authenticate('github'))

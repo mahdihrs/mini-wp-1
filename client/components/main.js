@@ -19,18 +19,26 @@ const app = new Vue({
         allArticles: [],
         myArticles: [],
         articlesWatchedByMeThroughTags: [],
+        articlesFindByTag: [],
+        tagNameToFindArticles: '',
+        oAuthSignUpData: {},
+        showFullArticleGeneralData: {},
         //homepage
         signUpForm: false,
         headers: true,
         navbarHomepage: true,
+        fullArticleGeneralExplore: false,
         // mysites
         mysites: true,
+        fullArticleGeneral: false,
         navbarMySites: false,
         myArticlesState: false,
         articleDetail: {},
         sidebar: true,
         fullArticleState: false,
         watchedTagsList: false,
+        findArticlesByTagState: false,
+        directToLogin: false,
         // explore section
         exploreSection: false,
         registerFormFromExplore: false,
@@ -47,6 +55,11 @@ const app = new Vue({
             return articlesForExplore
         }
     },
+    watch: {
+        // searchResults(v) {
+        //     console.log(v)
+        // }
+    },
     methods: {
         //NAVIGATIONS
         verify() {
@@ -57,6 +70,7 @@ const app = new Vue({
                 this.isLogin = true
                 this.toMySites()
                 this.getArticlesByMyWatchedTags()
+                this.populateUserInfo()
             }
         },
         homepage() {
@@ -73,12 +87,24 @@ const app = new Vue({
             this.sidebar = false
             this.mysites = false
             this.watchedTagsList = false
+            this.directToLogin = false
+            this.fullArticleGeneral = false
+            this.fullArticleGeneralExplore = false
         },
         toExplore() {
             this.signUpForm = false
             this.headers = false
             this.exploreSection = true
             this.registerFormFromExplore = true
+            this.fullArticleGeneral = false
+            this.fullArticleGeneralExplore = false
+        },
+        toLoginForm() {
+            this.headers = false
+            this.signUpForm = true
+            this.registerFormFromExplore = false
+            this.exploreSection = false
+            this.directToLogin = true
         },
         toRegisterForm() {
             this.headers = false
@@ -93,6 +119,44 @@ const app = new Vue({
                 this.toMySites()
             }, 1000)
         },
+        toFullArticleFromExplore() {
+            this.signUpForm = false
+            this.headers = false
+            this.navbarHomepage = true
+            this.navbarMySites = false
+            this.writePost = false
+            this.navbarWritePost = false
+            this.exploreSection = false
+            this.registerFormFromExplore = false
+            this.myArticlesState = false
+            this.fullArticleState = false
+            this.sidebar = false
+            this.mysites = true
+            this.watchedTagsList = false
+            this.directToLogin = false
+            this.fullArticleGeneral = false
+            this.fullArticleGeneral = false
+            this.fullArticleGeneralExplore = true
+        },
+        toFullArticleGeneral() {
+            this.signUpForm = false
+            this.headers = false
+            this.navbarHomepage = false
+            this.navbarMySites = true
+            this.writePost = false
+            this.navbarWritePost = false
+            this.exploreSection = false
+            this.registerFormFromExplore = false
+            this.myArticlesState = false
+            this.fullArticleState = false
+            this.sidebar = false
+            this.mysites = true
+            this.watchedTagsList = false
+            this.directToLogin = false
+            this.fullArticleGeneral = false
+            this.fullArticleGeneral = true
+            this.fullArticleGeneralExplore = false
+        },
         toMySites() {
             this.signUpForm = false
             this.headers = false
@@ -104,6 +168,7 @@ const app = new Vue({
             this.mysites = true
             this.sidebar = true
             this.myArticlesState = true
+            this.fullArticleState = false
         },
         toWritePost() {
             this.signUpForm = false
@@ -113,18 +178,42 @@ const app = new Vue({
             this.writePost = true
             this.navbarWritePost = true
             this.myArticlesState = false
-            // this.mysites = false
+            this.mysites = false
             this.watchedTagsList = false
         },
         toMyArticles() {
             this.myArticlesState = true
             this.fullArticleState = false
             this.watchedTagsList = false
+            this.findArticlesByTagState = false
         },
         toMyWatchList() {
             this.myArticlesState = false
             this.fullArticleState = false
             this.watchedTagsList = true
+            this.findArticlesByTagState = false
+        },
+        toFindByTag() {
+            this.myArticlesState = false
+            this.fullArticleState = false
+            this.watchedTagsList = false
+            this.findArticlesByTagState = true
+        },
+        toMySitesGetAllArticles() {
+            this.getMyArticles()
+            this.getArticlesByMyWatchedTags()
+            this.findArticlesByTag()
+            setTimeout(() => {
+                this.toMySites()
+            }, 2000)
+        },
+        fullArticleFromExplore(payload) {
+            this.showFullArticleGeneralData = payload
+            this.toFullArticleFromExplore()
+        },
+        setArticleData(payload) {
+            this.showFullArticleGeneralData = payload
+            this.toFullArticleGeneral()
         },
         //TALKING TO SERVER
         getMyArticles() {
@@ -160,7 +249,11 @@ const app = new Vue({
                 method: 'get',
             })
             .then(({data}) => {
-                this.searchResults = data
+                if (payload.length === 0) {
+                    this.searchResults = []
+                } else {
+                    this.searchResults = data
+                }
             })
             .catch(err => {
                 console.log(err)
@@ -175,7 +268,7 @@ const app = new Vue({
                 }
             })
             .then(({data}) => {
-                this.articleDetail = data.data
+                this.articleDetail = data
                 this.myArticlesState = false
                 this.fullArticleState = true
             })
@@ -197,6 +290,94 @@ const app = new Vue({
             .catch(err => {
                 console.log(err)
             })
+        },
+        populateUserInfo(payload) {
+            this.userLogin = {}
+            server({
+                url: `/get-user-info`, 
+                method: 'get',
+                headers: {
+                    access_token: localStorage.getItem('token')
+                }
+            })
+            .then(({data}) => {
+                if (payload) {
+                    this.getArticlesByMyWatchedTags()
+                }
+                this.userLogin = {
+                    id: data._id,
+                    name: data.name,
+                    watchedtags: data.watchedTags
+                }
+            })
+            .catch(err => {
+                console.log(err)
+            })
+        },
+        findArticlesByTag(id) {
+
+            server({
+                url: `/articles/find-by-tags/${id}`,
+                method: 'get',
+            })
+            .then(({data}) => {
+                this.toFindByTag()
+                this.articlesFindByTag = data.articles
+                this.tagNameToFindArticles = data.tag
+            })
+            .catch(err => {
+                console.log(err)
+            })
+        },
+        logout() {
+            signOut()
+            // localStorage.removeItem('token')
+            this.homepage()
         }
     }
 })
+
+function onSignIn(googleUser) {
+    if(localStorage.getItem('token')) {
+        swal('You are already logged in')
+    }
+    
+    const id_token = googleUser.getAuthResponse().id_token;
+    server({
+        url: `/login`,
+        method: 'post',
+        data: {
+            token: id_token
+        }
+    })
+    .then(({data}) => {
+        if (data.token) {
+            localStorage.setItem('token', data.token)
+            app.isLogin = true
+            app.toMySites()
+        } else {
+            app.oAuthSignUpData = {
+                name: data.name,
+                email: data.email
+            }
+            setTimeout(() => {
+                app.toRegisterForm()
+              }, 2000)
+        }
+    })
+    .catch(err => {
+        console.log(err)
+    })
+}
+
+function signOut() {
+    // var auth2 = gapi.auth2.getAuthInstance();
+    // auth2.signOut()
+    // .then(function () {
+        app.oAuthSignUpData = {} 
+        localStorage.removeItem('token')
+        app.isLogin = false
+        app.homepage()
+        swal('You signed out successfully.')
+    // });
+}

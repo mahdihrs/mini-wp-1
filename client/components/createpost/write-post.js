@@ -44,7 +44,6 @@ Vue.component('write-post-form', {
                 data: articleData
             })
             .then(({data}) => {
-                console.log(data)
                 CreatingArticleSucceed.fire({
                     type: 'success',
                     title: 'Article has been created'
@@ -74,7 +73,6 @@ Vue.component('write-post-form', {
                         type: 'success',
                         title: 'You can use or remove this "Auto-Generate Tags" feature.^^'
                     })
-                    console.log(data)
                     data.labels.forEach(e => {
                         this.tag = e
                         this.tags.push({

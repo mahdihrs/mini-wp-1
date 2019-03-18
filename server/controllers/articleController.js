@@ -4,15 +4,22 @@ const { autoGenerateTags } = require('../helpers/google-vision')
 
 class Controller {
     static findByTags(req, res) {
-        let query = req.body.tag
+        let query = req.params.id
         Article
             .find({
                 tags: query
             })
             .then(articles => {
-                res
-                    .status(200)
-                    .json(articles)
+                return Tag
+                    .findById(query)
+                    .then(tagName => {
+                        res
+                            .status(200)
+                            .json({
+                                articles,
+                                tag: tagName.name
+                            })
+                    })
             })
             .catch(err => {
                 res
@@ -41,13 +48,11 @@ class Controller {
               ]
             })
             .then(articles=> {
-                console.log(articles)
                 res
                     .status(200)
                     .json(articles)
             })
             .catch(err => {
-                console.log(err)
                 res
                     .status(500)
                     .json({
@@ -133,7 +138,6 @@ class Controller {
             })
         })
         .catch(err => {
-            console.log(err)
             res
                 .status(500)
                 .json({
@@ -151,10 +155,7 @@ class Controller {
         .then(article => {
             res
                 .status(201)
-                .json({
-                    msg: `Fetch the article`,
-                    data: article
-                })
+                .json(article)
         })
         .catch(err => {
             res
@@ -167,21 +168,55 @@ class Controller {
     }
 
     static editArticle(req, res) {
-        let filter = ['title', 'content', 'tags']
+        let filter = ['title', 'content', 'tags', 'image']
         let filtered = {}
         for (const key in req.body) {
             let findFilter = filter.includes(key)
             if (findFilter) filtered[key] = req.body[key]
         }
-        Article.findByIdAndUpdate(req.params.id, filtered, { new: true })
-        .then(updated => {
-            res
-                .status(200)
-                .json({
-                    msg: `Article successfully been updated`,
-                    data: updated
+        filtered.tags = filtered.tags.map(tag => tag.text)
+        let promises = []
+        let output = []
+        filtered.tags.forEach( tag => {
+            promises.push(
+                Tag.findOneAndUpdate({ 
+                    name: tag 
+                }, { 
+                    $set: { 
+                        name: tag 
+                    }
+                }, { 
+                    upsert: true, 
+                    new: true 
                 })
+            )
         })
+
+        Promise.all(promises)
+        .then(function(tags) {
+            tags.forEach(tag => {
+                output.push(tag._id)
+            })
+            filtered.tags = output
+            return Article.findByIdAndUpdate(req.params.id, filtered, { new: true })
+            .then(updated => {
+                res
+                    .status(200)
+                    .json({
+                        msg: `Article successfully been updated`,
+                        data: updated
+                    })
+            })
+        })
+        .catch(err => {
+            res
+                .status(500)
+                .json({
+                    msg: `Internal server error`,
+                    err: err
+                }) 
+        })
+
     }
 
     static removeArticle(req, res) {
@@ -195,7 +230,6 @@ class Controller {
                 })
         })
         .catch(err => {
-            console.log(err)
             res
                 .status(500)
                 .json({
@@ -210,7 +244,7 @@ class Controller {
             author: req.decoded.id
         }).sort([
             ['created_at', 'descending']
-        ])
+        ]).populate('tags')
         .then(articles => {
             res
                 .status(200)
@@ -229,7 +263,6 @@ class Controller {
     static autoGenerateTags(req, res) {
         autoGenerateTags(req.file.cloudStoragePublicUrl)
         .then(labels => {
-            console.log(labels)
             res 
                 .status(200)
                 .json({
@@ -272,7 +305,6 @@ class Controller {
           ]
         })
         .then(data=> {
-            console.log(data)
             res
                 .status(200)
                 .json(data)

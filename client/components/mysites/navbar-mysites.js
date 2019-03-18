@@ -14,7 +14,7 @@ Vue.component('navbar-mysites', {
         toHomepage() {
             this.$emit('to-homepage')
         },
-        tempToWritePost() {
+        toWritePost() {
             this.$emit('to-write-post')
         },
         searchArticle(value) {
@@ -23,6 +23,9 @@ Vue.component('navbar-mysites', {
         getMyArticles() {
             this.$emit('get-me-articles')
         },
+        logout() {
+            this.$emit('logout')
+        }
     },
     template: `
     <div>
@@ -38,8 +41,9 @@ Vue.component('navbar-mysites', {
             <div class="collapse navbar-collapse col-10" id="navbarColor02">
                 <input class="form-control mr-sm-2 hw-100 col-10" type="text" placeholder="Search" v-model="keyword">
             </div>
-            <div href=""><i class="fas fa-bell" style="font-size: 1.5em;"></i></div>
-            <button class="ml-3" @click="tempToWritePost">Write</button>
+            <!-- <div href=""><i class="fas fa-bell" style="font-size: 1.5em;"></i></div> -->
+            <button class="mr-3 btn btn-primary" @click="toWritePost">Write</button>
+            <button class="btn btn-primary" @click="logout">Logout</button>
         </nav>
         <div id="sideMenuH" class="mr-3 px-4 py-3 border col-1.5 collapse" style="max-width: 200px; position: absolute; max-height: 700px; overflow-y: auto;">
             <p id="sub-title">Functional Buttons</p>
