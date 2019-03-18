@@ -78,7 +78,7 @@ Vue.component('article-detail', {
                         })
                         .then(() => {
                             this.loading = false
-                            this.backToMySites()
+                            this.backToMySitesGetArticlesWatchedAndGetAllArticles()
                             swal("Your post has been deleted!", {
                                 icon: "success",
                             });
@@ -207,17 +207,17 @@ Vue.component('article-detail', {
                     <div id="form-edit-article" class="col-11 container mx-3 my-3">
                         <!-- <form id="edit-post" method="post"> -->
                             <input type="text" placeholder="Title" class="container" height="100px" style="font-size: 20pt;" v-model="title">
-                            <div class="my-3">
+                            <!-- <div class="my-3">
                                 <img :src="image" >
-                            </div>
-                            <div style="position:relative;" class="my-3">
+                            </div> -->
+                            <!-- <div style="position:relative;" class="my-3">
                                 <input type="file" name="myFile">
-                                <!-- <a class='btn btn-primary' href='javascript:;'> -->
-                                <!-- Choose File -->
-                                <input type="file" style='position:absolute;z-index:2;top:0;left:0;filter: alpha(opacity=0);-ms-filter:"progid:DXImageTransform.Microsoft.Alpha(Opacity=0)";opacity:0;background-color:transparent;color:transparent;' name="file_source" size="40" @change="getFile">
+                                <a class='btn btn-primary' href='javascript:;'>
+                                Choose File
+                                <input href='javascript:;' type="file" style='position:absolute;z-index:2;top:0;left:0;filter: alpha(opacity=0);-ms-filter:"progid:DXImageTransform.Microsoft.Alpha(Opacity=0)";opacity:0;background-color:transparent;color:transparent;' name="file_source" size="40" @change="getFile">
                                 </a>
                                 <span class='label label-info' id="upload-file-info"></span>
-                            </div>
+                            </div> -->
                             <template>
                                 <div class="mb-3">
                                     <vue-tags-input
