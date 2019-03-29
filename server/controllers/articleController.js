@@ -154,7 +154,7 @@ class Controller {
             .populate('tags')
         .then(article => {
             res
-                .status(201)
+                .status(200)
                 .json(article)
         })
         .catch(err => {
@@ -204,7 +204,7 @@ class Controller {
                     .status(200)
                     .json({
                         msg: `Article successfully been updated`,
-                        data: updated
+                        // data: updated
                     })
             })
         })
@@ -226,7 +226,7 @@ class Controller {
                 .status(200)
                 .json({
                     msg: `Successfully delete the article`,
-                    data: deleted
+                    // data: deleted
                 })
         })
         .catch(err => {

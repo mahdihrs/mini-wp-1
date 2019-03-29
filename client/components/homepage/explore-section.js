@@ -30,15 +30,15 @@ Vue.component('explore-section', {
     <div>
         <div class="container d-flex mt-5">
             <div>
-                <highlight-cards @to-detail-article="toFullArticle" :cardObj="explorecards[explorecards.length - 6]"></highlight-cards>
+                <highlight-cards @to-detail-article="toFullArticle" :cardObj="explorecards[0]"></highlight-cards>
             </div>
             <div class="mx-5">
-                <list-cards @to-detail-article="toFullArticle" :cardObj="explorecards[explorecards.length - 2]"></list-cards>
-                <list-cards @to-detail-article="toFullArticle" :cardObj="explorecards[explorecards.length - 3]"></list-cards>
-                <list-cards @to-detail-article="toFullArticle" :cardObj="explorecards[explorecards.length - 4]"></list-cards>
+                <list-cards @to-detail-article="toFullArticle" :cardObj="explorecards[1]"></list-cards>
+                <list-cards @to-detail-article="toFullArticle" :cardObj="explorecards[2]"></list-cards>
+                <list-cards @to-detail-article="toFullArticle" :cardObj="explorecards[3]"></list-cards>
             </div>
             <div>
-                <highlight-cards @to-detail-article="toFullArticle" :cardObj="explorecards[5]"></highlight-cards>
+                <highlight-cards @to-detail-article="toFullArticle" :cardObj="explorecards[4]"></highlight-cards>
             </div>
         </div>
         <div v-if="!someonelogin" class="container">

@@ -209,11 +209,17 @@ const app = new Vue({
         },
         fullArticleFromExplore(payload) {
             this.showFullArticleGeneralData = payload
+            // setTimeout(() => {
+            //     this.toFullArticleGeneral()
+            // }, 2500)
             this.toFullArticleFromExplore()
         },
         setArticleData(payload) {
+            // console.log(payload)
             this.showFullArticleGeneralData = payload
-            this.toFullArticleGeneral()
+            setTimeout(() => {
+                this.toFullArticleGeneral()
+            }, 2500)
         },
         //TALKING TO SERVER
         getMyArticles() {
@@ -259,16 +265,27 @@ const app = new Vue({
                 console.log(err)
             })
         },
-        getFullDetailArticle(id) {
+        getFullDetailArticle(payload) {
+            let checkKey = payload.split(',')
+            if (checkKey.length === 2) {
+                payload = checkKey[0]
+            } 
+            
             server({
-                url: `/articles/${id}`,
+                url: `/articles/${payload}`,
                 method: 'get',
                 headers: {
                     access_token: localStorage.getItem('token')
                 }
             })
             .then(({data}) => {
+                console.log(data)
+                // console.log(checkKey)
                 this.articleDetail = data
+                if (checkKey.length === 2) {
+                    this.toMySites()
+                    this.fullArticleGeneralExplore = false
+                }
                 this.myArticlesState = false
                 this.fullArticleState = true
             })
@@ -362,7 +379,7 @@ function onSignIn(googleUser) {
             }
             setTimeout(() => {
                 app.toRegisterForm()
-              }, 2000)
+            }, 2000)
         }
     })
     .catch(err => {
@@ -371,13 +388,22 @@ function onSignIn(googleUser) {
 }
 
 function signOut() {
-    // var auth2 = gapi.auth2.getAuthInstance();
-    // auth2.signOut()
-    // .then(function () {
-        app.oAuthSignUpData = {} 
+    if (gapi.auth2) {
+        const auth2 = gapi.auth2.getAuthInstance();
+        auth2.signOut()
+        .then(function () {
+            app.oAuthSignUpData = {} 
+            localStorage.removeItem('token')
+            localStorage.removeItem('id')
+            app.isLogin = false
+            app.homepage()
+            swal('You signed out successfully.')
+        });
+    } else {
         localStorage.removeItem('token')
+        localStorage.removeItem('id')
         app.isLogin = false
         app.homepage()
-        swal('You signed out successfully.')
-    // });
+        swal('You signed out successfully.')        
+    }
 }

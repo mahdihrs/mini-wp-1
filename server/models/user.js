@@ -43,7 +43,6 @@ const userSchema = new Schema({
     watchedTags: {
         type: Array
     },
-      
 })
 
 userSchema.pre('save', function(next) {

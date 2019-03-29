@@ -6,7 +6,7 @@ const Article = require('../models/article')
 const { generate } = require('../helpers/jwt')
 const { decrypt } = require('../helpers/bcryptjs')
 const {OAuth2Client} = require('google-auth-library');
-const client = new OAuth2Client('670497221809-rdt56lmo9f29ca1rfp8k3svm39q6gscd.apps.googleusercontent.com')//(process.env.CLIENT_ID);
+const client = new OAuth2Client('837858498136-uushnp9bvbq3ip8dqh78bu27mg13o7ir.apps.googleusercontent.com')//(process.env.CLIENT_ID);
 
 class Controller {
     static register(req, res) {
@@ -74,7 +74,7 @@ class Controller {
                             .status(422)
                             .json({
                                 msg: `Invalid email/password`,
-                                failedOn: `email`
+                                // failedOn: `email`
                             })
                     } else {
                         let token = generate(user)
@@ -98,7 +98,7 @@ class Controller {
         } else {
             client.verifyIdToken({
                 idToken: req.body.token,
-                audience: '292497169006-4bgte61cv58papdefcrkfjr73nq2nccr.apps.googleusercontent.com'
+                audience: '837858498136-uushnp9bvbq3ip8dqh78bu27mg13o7ir.apps.googleusercontent.com'
             })
             .then(ticket => {
                 const payload = ticket.getPayload()

@@ -2,6 +2,7 @@ Vue.component('watched-tags', {
     props: ['articleswatchedbyme', 'userlogin'],
     created() {
         this.populateMyTags()
+        console.log(this.userlogin)
     },
     data() {
         return {
@@ -65,14 +66,16 @@ Vue.component('watched-tags', {
     },
     methods: {
         populateMyTags() {
-            this.userlogin.watchedtags.forEach(e => {
-                this.tag = e
-                this.tags.push({
-                    text: this.tag,
-                    tiClasses: ['ti-valid']
+            if(this.userlogin.watchedtags) {
+                this.userlogin.watchedtags.forEach(e => {
+                    this.tag = e
+                    this.tags.push({
+                        text: this.tag,
+                        tiClasses: ['ti-valid']
+                    })
+                    this.tag = ''
                 })
-                this.tag = ''
-            })
+            }
         },
         getArticlesByTag(id) {
             this.tags = []

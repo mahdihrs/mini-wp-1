@@ -89,6 +89,7 @@ Vue.component('register-form', {
                     title: 'Registered in successfully'
                 })
                 localStorage.setItem('token', data.token)
+                localStorage.setItem('id', data.id)
                 this.setUserLogin({
                     id: data.id,
                     name: data.name,
@@ -106,7 +107,7 @@ Vue.component('register-form', {
                         errorsVal += `${e} \n `
                     });
                 }
-                console.log(errorsVal)
+                swal(errorsVal)
             })
         },
         loginUser() {
@@ -123,7 +124,9 @@ Vue.component('register-form', {
                     type: 'success',
                     title: 'Logged in successfully'
                 })
+                console.log(data)
                 localStorage.setItem('token', data.token)
+                localStorage.setItem('id', data.id)
                 this.setUserLogin({
                     id: data.id,
                     name: data.name,

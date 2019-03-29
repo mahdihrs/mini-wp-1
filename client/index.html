@@ -9,7 +9,8 @@
     <link href="https://stackpath.bootstrapcdn.com/bootswatch/4.3.1/flatly/bootstrap.min.css" rel="stylesheet" integrity="sha384-T5jhQKMh96HMkXwqVMSjF3CmLcL1nT9//tCqu9By5XSdj7CwR0r+F3LTzUdfkkQf" crossorigin="anonymous">
     <link href="https://fonts.googleapis.com/css?family=ZCOOL+XiaoWei" rel="stylesheet">
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
-    <meta name="google-signin-client_id" content="292497169006-4bgte61cv58papdefcrkfjr73nq2nccr.apps.googleusercontent.com">
+    <meta name="google-signin-client_id" content="837858498136-uushnp9bvbq3ip8dqh78bu27mg13o7ir.apps.googleusercontent.com">
+    <script src="https://apis.google.com/js/platform.js"></script>
     <title>Kumpakata 2</title>
 </head>
 <body>
@@ -19,7 +20,7 @@
             <content-homepage @to-register-form="toRegisterForm" v-if="headers"></content-homepage>
             <register-form :googleuser="oAuthSignUpData" :tologin="directToLogin" @get-watched-tags="getArticlesByMyWatchedTags" @get-my-articles="getMyArticles" @set-user-login="setUserLogin" v-if="signUpForm"></register-form>
             <explore-section @data-payload-to-show="fullArticleFromExplore" @to-register="toRegisterForm" :someonelogin="isLogin" :explorecards="allArticles" v-if="exploreSection"></explore-section>
-            <full-article-general :articledata="showFullArticleGeneralData" v-if="fullArticleGeneralExplore"></full-article-general>
+            <full-article-general @to-edit-article="getFullDetailArticle" :articledata="showFullArticleGeneralData" v-if="fullArticleGeneralExplore"></full-article-general>
         </div>
 
         <div id="my-sites" v-if="mysites">
@@ -42,7 +43,6 @@
             <write-post-form @to-my-sites="toMySites" v-if="writePost"></write-post-form>
         </div>
     </div>
-    <script src="https://apis.google.com/js/platform.js" async defer></script>
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
